@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title id="title-tag">Sovereignty Checker — a data-ethics grade for every site, and a European alternative</title>
+<meta id="meta-desc" name="description" content="A browser extension that scores any website A–F on trackers, cookies and where your data goes — and surfaces GDPR-friendly European alternatives. Runs entirely locally." />
+<meta property="og:title" content="Sovereignty Checker" />
+<meta property="og:description" content="Grade the web on data ethics. Then choose Europe." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#131a26; --ink2:#39465a; --muted:#6c7787;
+  --paper:#f5f7f9; --card:#ffffff; --line:#e6e9ee; --line2:#d7dbe2;
+  --navy:#1b3a6b; --teal:#0f6e56; --teal-2:#159a72; --teal-bg:#e6f4ee; --teal-ink:#0c5743;
+  --gold:#d9ad3a;
+  --gA:#1a8f5c; --gB:#4a9d3f; --gC:#c98a1a; --gD:#d2691e; --gF:#c0392b;
+  --band:#0f1826;
+  --r:12px; --rs:9px;
+  --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.02em;line-height:1.08;margin:0}
+p{margin:0}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:600;font-size:15px;padding:12px 20px;border-radius:var(--rs);border:1px solid transparent;cursor:pointer;transition:transform .12s ease,background .15s ease,box-shadow .15s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.btn-primary:hover{background:var(--teal-2)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn-ghost:hover{background:#fff;border-color:var(--ink2)}
+.btn-lg{padding:15px 26px;font-size:16px}
+:focus-visible{outline:3px solid rgba(21,154,114,.5);outline-offset:2px;border-radius:6px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(245,247,249,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:16.5px;letter-spacing:-.02em;min-width:0}
+.logo svg{width:26px;height:26px;flex:none}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-links a{font-size:14.5px;color:var(--ink2);font-weight:500;white-space:nowrap}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{display:flex;align-items:center;gap:10px}
+.lang-switch{display:flex;align-items:center;background:var(--paper);border:1px solid var(--line2);border-radius:999px;padding:3px;flex:none}
+.lang-btn{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.02em;color:var(--muted);background:transparent;border:none;border-radius:999px;padding:6px 11px;cursor:pointer;transition:background .15s ease,color .15s ease;min-height:28px}
+.lang-btn:hover{color:var(--ink)}
+.lang-btn[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* hamburger, hidden on desktop */
+.menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;flex:none;background:transparent;border:1px solid var(--line2);border-radius:9px;color:var(--ink);cursor:pointer;padding:0}
+.menu-btn svg{width:20px;height:20px}
+.menu-btn:hover{background:#fff}
+.menu-btn[aria-expanded="true"] .mi-top{transform:translateY(5px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .mi-mid{opacity:0}
+.menu-btn[aria-expanded="true"] .mi-bot{transform:translateY(-5px) rotate(-45deg)}
+.menu-btn svg path{transform-origin:center;transition:transform .18s ease,opacity .18s ease}
+
+.mobile-menu{display:none;flex-direction:column;padding:6px 24px 16px;border-top:1px solid var(--line);background:var(--paper)}
+.mobile-menu a{display:block;padding:13px 2px;font-family:var(--disp);font-weight:600;font-size:16px;color:var(--ink);border-bottom:1px solid var(--line)}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu[hidden]{display:none}
+
+@media(max-width:860px){
+  .nav-links{display:none}
+  .menu-btn{display:inline-flex}
+  .mobile-menu:not([hidden]){display:flex}
+}
+@media(max-width:480px){
+  .nav-cta .btn-primary{padding:10px 14px;font-size:13.5px}
+  .logo{font-size:15px}
+}
+@media(max-width:380px){
+  .nav-cta .btn-primary span{display:none}
+}
+
+/* hero */
+.hero{padding:74px 0 56px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:600;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-ink);background:var(--teal-bg);border:1px solid #cfe8dd;padding:5px 12px;border-radius:999px}
+.hero h1{font-size:clamp(34px,5vw,54px);font-weight:700;margin:20px 0 0}
+.hero h1 .u{background:linear-gradient(transparent 62%, #fbe9a8 62%)}
+.hero-sub{font-size:18px;color:var(--ink2);margin-top:20px;max-width:36ch}
+.hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.hero-note{margin-top:14px;font-size:13.5px;color:var(--muted)}
+.trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}
+.trust .n{font-family:var(--disp);font-weight:700;font-size:22px}
+.trust .l{font-size:12.5px;color:var(--muted);margin-top:1px}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px}.hero{padding:44px 0}}
+
+/* score demo card */
+.demo{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 48px -28px rgba(20,30,50,.28);overflow:hidden}
+.demo-top{display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:#fbfcfd}
+.pick{flex:1;font-family:var(--disp);font-weight:600;font-size:12.5px;padding:8px 6px;border:1px solid var(--line2);border-radius:8px;background:#fff;color:var(--ink2);cursor:pointer;transition:all .15s ease}
+.pick[aria-selected="true"]{color:#fff;border-color:transparent}
+.demo-body{padding:20px 20px 22px}
+.demo-head{display:flex;align-items:center;gap:16px}
+.gauge{position:relative;width:104px;height:104px;flex:none}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .ring-bg{stroke:#eceef2}
+.gauge-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-score{font-family:var(--disp);font-weight:700;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.gauge-grade{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.05em;margin-top:2px}
+.demo-host{font-family:var(--disp);font-weight:600;font-size:18px}
+.demo-summary{font-size:13px;color:var(--ink2);margin-top:4px;line-height:1.45}
+.brk{margin-top:20px;display:flex;flex-direction:column;gap:11px}
+.brk-row{display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:center}
+.brk-k{font-size:12.5px;font-weight:600;color:var(--ink)}
+.brk-k span{color:var(--muted);font-weight:400;font-size:10.5px;margin-left:4px}
+.brk-track{height:7px;border-radius:999px;background:#eef0f3;overflow:hidden}
+.brk-fill{height:100%;border-radius:999px;width:0;transition:width .7s cubic-bezier(.22,1,.36,1)}
+.demo-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+
+/* marquee */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff;padding:18px 0;overflow:hidden}
+.strip-label{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:12px;font-weight:500}
+.marquee{display:flex;gap:14px;width:max-content;animation:scroll 38s linear infinite}
+@media(prefers-reduced-motion:reduce){.marquee{animation:none;flex-wrap:wrap;width:auto;justify-content:center}}
+.marquee:hover{animation-play-state:paused}
+.chip{font-family:var(--disp);font-weight:600;font-size:14px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);padding:8px 14px;border-radius:999px;white-space:nowrap}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* sections */
+.sec{padding:84px 0}
+.sec-head{max-width:640px}
+.kicker{font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal)}
+.sec h2{font-size:clamp(28px,3.6vw,40px);margin-top:12px}
+.sec-lead{font-size:17.5px;color:var(--ink2);margin-top:16px}
+
+/* scoring criteria */
+.crit{margin-top:44px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.crit-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 16px}
+.crit-w{font-family:var(--disp);font-weight:700;font-size:26px}
+.crit-name{font-weight:600;font-size:14.5px;margin-top:6px}
+.crit-d{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.crit-bar{height:5px;border-radius:999px;background:#eef0f3;margin-top:14px;overflow:hidden}
+.crit-bar i{display:block;height:100%;border-radius:999px}
+
+/* alternatives */
+.alts{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.alt-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.alt-from{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.alt-from b{font-family:var(--disp);font-weight:600;font-size:15.5px;color:var(--ink)}
+.alt-arrow{margin:13px 0 12px;height:1px;background:var(--line);position:relative}
+.alt-arrow::after{content:"European alternatives";position:absolute;top:-9px;left:0;background:var(--card);padding-right:10px;font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--teal)}
+.alt-list{display:flex;flex-direction:column;gap:8px}
+.alt-item{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.alt-name{font-weight:600;font-size:14px}
+.alt-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.oss{font-size:9px;font-weight:700;letter-spacing:.03em;color:#9a7414;background:#faf1d4;border-radius:4px;padding:1px 5px}
+@media(max-width:860px){.alts{grid-template-columns:1fr}}
+
+/* privacy band */
+.band{background:var(--band);color:#e9edf3}
+.band .kicker{color:#5fd3a5}
+.band h2{color:#fff}
+.band .sec-lead{color:#aeb8c6}
+.band-grid{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.band-item h3{font-size:18px;color:#fff;display:flex;align-items:center;gap:9px}
+.band-item h3 svg{width:20px;height:20px;color:#5fd3a5}
+.band-item p{color:#a9b4c2;font-size:14.5px;margin-top:8px}
+.band-note{margin-top:34px;font-size:13px;color:#8592a3;border-top:1px solid rgba(255,255,255,.1);padding-top:20px;max-width:70ch}
+@media(max-width:860px){.band-grid{grid-template-columns:1fr;gap:26px}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;text-align:center}
+.stat .n{font-family:var(--disp);font-weight:700;font-size:34px;color:var(--navy)}
+.stat .l{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* faq */
+.faq{margin-top:40px;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;font-family:var(--disp);font-weight:600;font-size:17px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:6px;top:18px;font-size:24px;font-weight:500;color:var(--teal);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{padding:0 0 22px;color:var(--ink2);max-width:72ch}
+
+/* cta band */
+.cta{text-align:center;padding:90px 24px;background:linear-gradient(180deg,#fff, #eef4f1);border-top:1px solid var(--line)}
+.cta h2{font-size:clamp(28px,4vw,42px)}
+.cta p{color:var(--ink2);font-size:18px;margin:16px auto 28px;max-width:46ch}
+
+/* footer */
+footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 40px;font-size:14px}
+.foot-grid{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.foot-links{display:flex;gap:26px;flex-wrap:wrap}
+.foot-links a{color:var(--ink2)}
+.foot-links a:hover{color:var(--ink)}
+.foot-made{margin-top:22px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:7px}
+
+/* in-page privacy view */
+#view-privacy{display:block}
+#view-privacy[hidden]{display:none}
+.priv-hero{padding:44px 0 12px;max-width:820px}
+.back-link{display:inline-flex;align-items:center;gap:7px;font-family:var(--disp);font-weight:600;font-size:13.5px;color:var(--teal-ink);background:var(--teal-bg);border:1px solid #cfe8dd;border-radius:999px;padding:7px 14px 7px 11px;cursor:pointer;margin-bottom:22px}
+.back-link:hover{background:#d9f0e6}
+.back-link svg{flex:none}
+.priv-hero .page-title{font-size:clamp(28px,4.2vw,40px);margin-top:12px}
+.priv-hero .updated{color:var(--muted);font-size:13.5px;margin-top:12px}
+.priv-hero .tldr{margin-top:24px;background:var(--teal-bg);border:1px solid #cfe8dd;border-radius:var(--r);padding:16px 18px}
+.priv-hero .tldr b{color:var(--teal-ink)}
+article.wrap{max-width:820px;padding-top:8px;padding-bottom:90px}
+article section{padding:28px 0;border-top:1px solid var(--line)}
+article section:first-child{border-top:none}
+article h2{font-size:20px;margin-bottom:11px}
+article p{color:var(--ink2);margin-bottom:11px;font-size:15.5px;line-height:1.6}
+article p:last-child{margin-bottom:0}
+article ul{margin:0 0 11px;padding-left:20px;color:var(--ink2);font-size:15.5px;line-height:1.6}
+article li{margin-bottom:6px}
+article code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:13.5px}
+.perm-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px}
+.perm-table th{text-align:left;font-family:var(--disp);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--line)}
+.perm-table td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.perm-table td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+.table-scroll .perm-table{min-width:480px}
+
+/* ===================================================================
+   Responsive: tablet (1024px), tablet-portrait (768px), phone (480/380)
+   Applied last so these tighten/override the component rules above.
+   =================================================================== */
+
+/* iPad landscape / small laptop */
+@media(max-width:1024px){
+  .wrap{padding:0 22px}
+  .crit{grid-template-columns:repeat(3,1fr)}
+}
+
+/* iPad portrait and large phones */
+@media(max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Tablet portrait (iPad mini/portrait) */
+@media(max-width:768px){
+  .wrap{padding:0 20px}
+  .sec{padding:60px 0}
+  .hero{padding:36px 0 40px}
+  .hero-sub{max-width:none}
+  .trust{gap:18px 26px}
+  .demo-body{padding:18px 16px 20px}
+  .crit{grid-template-columns:repeat(2,1fr)}
+  article.wrap{padding-bottom:70px}
+}
+
+/* Phones */
+@media(max-width:600px){
+  .wrap{padding:0 18px}
+  .btn-lg{padding:13px 20px;font-size:15px}
+  .hero h1{font-size:clamp(28px,8vw,38px)}
+  .hero-sub{font-size:16px}
+  .hero-cta{flex-direction:column;align-items:stretch}
+  .hero-cta .btn{justify-content:center}
+  .hero-note{text-align:center}
+  .trust{justify-content:space-between;gap:14px 10px}
+  .trust > div{flex:1 1 40%}
+  .demo-top{flex-wrap:wrap}
+  .pick{flex:1 1 auto;min-width:30%}
+  .demo-head{gap:12px}
+  .gauge{width:84px;height:84px}
+  .gauge svg{width:84px;height:84px}
+  .gauge-score{font-size:24px}
+  .demo-host{font-size:16px}
+  .crit{grid-template-columns:1fr}
+  .alts{grid-template-columns:1fr}
+  .band-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .stat{padding:18px 14px}
+  .stat .n{font-size:28px}
+  .faq summary{font-size:16px;padding:16px 34px 16px 0}
+  .cta{padding:64px 20px}
+  .foot-grid{flex-direction:column;align-items:flex-start;gap:20px}
+  .foot-links{gap:14px 20px}
+  .priv-hero{padding:32px 0 8px}
+  .back-link{margin-bottom:18px}
+}
+
+/* Small phones (SE, older Android) */
+@media(max-width:380px){
+  .nav-cta .btn-primary span{display:none}
+  .nav-cta .btn-primary{padding:10px;width:38px;height:38px;justify-content:center}
+  .logo{font-size:14px;gap:8px}
+  .trust > div{flex:1 1 100%}
+  .pick{min-width:100%}
+}
+
+/* Landscape phones: recover vertical space in the sticky nav & hero */
+@media(max-height:480px) and (orientation:landscape){
+  .nav-in{height:56px}
+  .hero{padding:24px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top" aria-label="Sovereignty Checker home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L28 6 V15 C28 23 22 28 16 30 C10 28 4 23 4 15 V6 Z" fill="#1b3a6b"/><path d="M16 11 l1.6 3.3 3.6 .5 -2.6 2.5 .6 3.6 -3.2 -1.7 -3.2 1.7 .6 -3.6 -2.6 -2.5 3.6 -.5 Z" fill="#dbad3a"/></svg>
+      Sovereignty Checker
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#how" data-i18n="nav.how">How it works</a>
+      <a href="#alternatives" data-i18n="nav.alternatives">Alternatives</a>
+      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" class="lang-btn" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+      <a class="btn btn-primary" href="#install" data-store-link>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span data-i18n="nav.cta">Add to Chrome</span>
+      </a>
+      <button type="button" class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="mi-top" d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="mi-mid" d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="mi-bot" d="M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Primary mobile" hidden>
+    <a href="#how" data-i18n="nav.how">How it works</a>
+    <a href="#alternatives" data-i18n="nav.alternatives">Alternatives</a>
+    <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    <a href="#privacy-policy" class="view-link" data-view="privacy" data-i18n="footer.privacyPolicy">Privacy policy</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <div id="view-home">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke="currentColor" stroke-width="2"/></svg> <span data-i18n="hero.eyebrow">Chrome · Edge · Brave · free</span></span>
+        <h1 data-i18n-html="hero.title">Grade the web on data ethics. Then <span class="u">choose Europe</span>.</h1>
+        <p class="hero-sub" data-i18n="hero.sub">Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a US tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#install" data-store-link data-i18n="hero.ctaPrimary">Add to your browser</a>
+          <a class="btn btn-ghost btn-lg" href="#how" data-i18n="hero.ctaGhost">See how scoring works</a>
+        </div>
+        <p class="hero-note" data-i18n="hero.note">No account. No tracking. Nothing leaves your device.</p>
+        <div class="trust">
+          <div><div class="n">356</div><div class="l" data-i18n="hero.trustTools">tools tracked</div></div>
+          <div><div class="n">339</div><div class="l" data-i18n="hero.trustProviders">European providers</div></div>
+          <div><div class="n">137</div><div class="l" data-i18n="hero.trustGerman">German providers</div></div>
+          <div><div class="n">100%</div><div class="l" data-i18n="hero.trustLocal">local &amp; private</div></div>
+        </div>
+      </div>
+
+      <div class="demo" id="demo" aria-label="Data ethics score demo">
+        <div class="demo-top" role="tablist" aria-label="Example sites">
+          <button class="pick" role="tab" data-key="proton" aria-selected="true">proton.me</button>
+          <button class="pick" role="tab" data-key="saas" aria-selected="false">example-saas.com</button>
+          <button class="pick" role="tab" data-key="adtech" aria-selected="false">adtech-tracker.io</button>
+        </div>
+        <div class="demo-body">
+          <div class="demo-head">
+            <div class="gauge">
+              <svg width="104" height="104" viewBox="0 0 104 104">
+                <circle class="ring-bg" cx="52" cy="52" r="46" fill="none" stroke-width="9"/>
+                <circle id="ring" cx="52" cy="52" r="46" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="289.0" stroke-dashoffset="289.0" style="transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1), stroke .3s"/>
+              </svg>
+              <div class="gauge-mid">
+                <span class="gauge-score" id="score">0</span>
+                <span class="gauge-grade" id="grade">—</span>
+              </div>
+            </div>
+            <div>
+              <div class="demo-host" id="host">proton.me</div>
+              <div class="demo-summary" id="summary"></div>
+            </div>
+          </div>
+          <div class="brk" id="brk"></div>
+          <div class="demo-foot" data-i18n="hero.demoFoot">Weights — trackers 30 · data flow 25 · cookies 20 · privacy policy 15 · infrastructure 10</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="strip-label" data-i18n="strip.label">European providers in the database</div>
+    <div class="marquee" id="marquee"></div>
+  </section>
+
+  <section class="sec wrap" id="how">
+    <div class="sec-head">
+      <div class="kicker" data-i18n="how.kicker">The score</div>
+      <h2 data-i18n="how.title">Like Lighthouse, but for data ethics</h2>
+      <p class="sec-lead" data-i18n="how.lead">Every page is checked against five signals, each weighted. The letter grade lands on your toolbar; the full breakdown is one click away.</p>
+    </div>
+    <div class="crit">
+      <div class="crit-card"><div class="crit-w" style="color:var(--gF)">30</div><div class="crit-name" data-i18n="crit.trackers.name">Trackers</div><div class="crit-d" data-i18n="crit.trackers.d">Third-party trackers and ad-tech loaded on the page.</div><div class="crit-bar"><i style="width:100%;background:var(--gF)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gD)">25</div><div class="crit-name" data-i18n="crit.dataflow.name">Data flow</div><div class="crit-d" data-i18n="crit.dataflow.d">How many US-owned destinations receive the data.</div><div class="crit-bar"><i style="width:83%;background:var(--gD)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gC)">20</div><div class="crit-name" data-i18n="crit.cookies.name">Cookies</div><div class="crit-d" data-i18n="crit.cookies.d">Cookies set, and whether a consent tool is present.</div><div class="crit-bar"><i style="width:66%;background:var(--gC)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gB)">15</div><div class="crit-name" data-i18n="crit.policy.name">Privacy policy</div><div class="crit-d" data-i18n="crit.policy.d">Is there a policy, and does it mention GDPR.</div><div class="crit-bar"><i style="width:50%;background:var(--gB)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gA)">10</div><div class="crit-name" data-i18n="crit.infra.name">Infrastructure</div><div class="crit-d" data-i18n="crit.infra.d">Signals of EU versus US hosting behind the site.</div><div class="crit-bar"><i style="width:33%;background:var(--gA)"></i></div></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="alternatives" style="padding-top:0">
+    <div class="sec-head">
+      <div class="kicker" data-i18n="alt.kicker">The way out</div>
+      <h2 data-i18n="alt.title">On a US tool? Here's the European one.</h2>
+      <p class="sec-lead" data-i18n="alt.lead">The moment you open a tracked service, Sovereignty Checker surfaces vetted alternatives — with a strong German and EU focus, open-source options flagged.</p>
+    </div>
+    <div class="alts">
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>Notion</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Capacities</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+          <div class="alt-item"><span class="alt-name">Nuclino</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+          <div class="alt-item"><span class="alt-name">Anytype</span><span class="alt-meta">🇪🇺 <span data-i18n="country.eu">Europe</span> <span class="oss">OSS</span></span></div>
+        </div>
+      </div>
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>Google Analytics</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Matomo</span><span class="alt-meta">🇪🇺 <span data-i18n="country.eu">Europe</span> <span class="oss">OSS</span></span></div>
+          <div class="alt-item"><span class="alt-name">Plausible</span><span class="alt-meta">🇪🇪 <span data-i18n="country.ee">Estonia</span></span></div>
+          <div class="alt-item"><span class="alt-name">etracker</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+        </div>
+      </div>
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>AWS</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Hetzner</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+          <div class="alt-item"><span class="alt-name">OVHcloud</span><span class="alt-meta">🇫🇷 <span data-i18n="country.fr">France</span></span></div>
+          <div class="alt-item"><span class="alt-name">STACKIT</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+        </div>
+      </div>
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>Mailchimp</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Brevo</span><span class="alt-meta">🇫🇷 <span data-i18n="country.fr">France</span></span></div>
+          <div class="alt-item"><span class="alt-name">rapidmail</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+          <div class="alt-item"><span class="alt-name">CleverReach</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+        </div>
+      </div>
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>ChatGPT</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Mistral · Le Chat</span><span class="alt-meta">🇫🇷 <span data-i18n="country.fr">France</span> <span class="oss">OSS</span></span></div>
+          <div class="alt-item"><span class="alt-name">Aleph Alpha</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+          <div class="alt-item"><span class="alt-name">DeepL Write</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+        </div>
+      </div>
+      <div class="alt-card">
+        <div class="alt-from"><span data-i18n="alt.insteadOf">Instead of</span> <b>Slack</b></div><div class="alt-arrow"></div>
+        <div class="alt-list">
+          <div class="alt-item"><span class="alt-name">Element</span><span class="alt-meta">🇬🇧 <span data-i18n="country.gb">UK</span> <span class="oss">OSS</span></span></div>
+          <div class="alt-item"><span class="alt-name">Wire</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span> <span class="oss">OSS</span></span></div>
+          <div class="alt-item"><span class="alt-name">Stackfield</span><span class="alt-meta">🇩🇪 <span data-i18n="country.de">Germany</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="privacy">
+    <div class="wrap sec">
+      <div class="sec-head">
+        <div class="kicker" data-i18n="priv.kicker">Private by design</div>
+        <h2 data-i18n="priv.title">The audit stays on your machine</h2>
+        <p class="sec-lead" data-i18n="priv.lead">A privacy tool that phoned home would be a contradiction. So this one doesn't.</p>
+      </div>
+      <div class="band-grid">
+        <div class="band-item">
+          <h3><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="2"/></svg> <span data-i18n="priv.item1.h">Everything runs locally</span></h3>
+          <p data-i18n="priv.item1.p">Trackers, cookies and policy checks are computed in your browser from what the page already loads. No page content is ever sent anywhere.</p>
+        </div>
+        <div class="band-item">
+          <h3><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2"/></svg> <span data-i18n="priv.item2.h">No accounts, no ads</span></h3>
+          <p data-i18n="priv.item2.p">No sign-up, no analytics, no third-party SDKs, no advertising. It never identifies you and there's nothing to log in to.</p>
+        </div>
+        <div class="band-item">
+          <h3><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2"/></svg> <span data-i18n="priv.item3.h">One optional request</span></h3>
+          <p data-i18n="priv.item3.p">The only network call it can make is a tool-list refresh — off by default, to a URL you choose. That's it.</p>
+        </div>
+      </div>
+      <p class="band-note" data-i18n-html="priv.note">Why it matters: under the US CLOUD Act, data held by US providers can be compelled regardless of where the servers sit — which is exactly what the <i>Schrems</i> rulings put in question for European data. Sovereignty Checker makes that exposure visible, then points to a European option.</p>
+      <p class="band-note" style="margin-top:10px"><a href="#privacy-policy" class="view-link" data-view="privacy" style="color:#5fd3a5;font-weight:600" data-i18n="priv.fullLink">Read the full privacy policy →</a></p>
+    </div>
+  </section>
+
+  <section class="sec wrap">
+    <div class="sec-head" style="margin-bottom:34px">
+      <div class="kicker" data-i18n="stats.kicker">By the numbers</div>
+      <h2 data-i18n="stats.title">Broad enough to be useful on day one</h2>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">356</div><div class="l" data-i18n="stats.tools">tracked tools</div></div>
+      <div class="stat"><div class="n">339</div><div class="l" data-i18n="stats.eu">EU providers</div></div>
+      <div class="stat"><div class="n">137</div><div class="l" data-i18n="stats.de">German providers</div></div>
+      <div class="stat"><div class="n">19</div><div class="l" data-i18n="stats.cat">categories</div></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="faq" style="padding-top:0">
+    <div class="sec-head">
+      <div class="kicker" data-i18n="faq.kicker">Questions</div>
+      <h2 data-i18n="faq.title">Good to know</h2>
+    </div>
+    <div class="faq">
+      <details open><summary data-i18n="faq.q1">Is it really free?</summary><p data-i18n="faq.a1">Yes. It's free, independent, and contains no ads or upsells. If you'd like to support it, star the repository or share it with your team.</p></details>
+      <details><summary data-i18n="faq.q2">Do you collect any of my data?</summary><p data-i18n-html="faq.a2">No. The scoring happens entirely in your browser and no browsing data is transmitted. Your settings are stored locally on your device. The only outbound request the extension can make is an optional tool-list update to a URL you set. See the full <a href="#privacy-policy" class="view-link" data-view="privacy">privacy policy</a>.</p></details>
+      <details><summary data-i18n="faq.q3">How accurate is the hosting detection?</summary><p data-i18n="faq.a3">Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely US versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.</p></details>
+      <details><summary data-i18n="faq.q4">Which browsers are supported?</summary><p data-i18n="faq.a4">Any Chromium browser — Chrome, Edge, Brave, Opera, Arc. A Firefox build is straightforward from the same code; see the project README.</p></details>
+      <details><summary data-i18n="faq.q5">Can I add or correct a tool?</summary><p data-i18n="faq.a5">Absolutely. The database is a single file, and the extension can auto-update from a hosted list, so new tools and fixes reach users without a reinstall. Contributions are welcome.</p></details>
+    </div>
+  </section>
+
+  <section class="cta" id="install">
+    <h2 data-i18n="cta.title">Put Europe one click away.</h2>
+    <p data-i18n="cta.sub">Install Sovereignty Checker and every site gets a grade — and an alternative.</p>
+    <a class="btn btn-primary btn-lg" href="#" data-store-link data-i18n="cta.btn">Add to your browser — free</a>
+  </section>
+  </div>
+  <!-- /view-home -->
+
+  <div id="view-privacy" hidden>
+    <div class="wrap priv-hero">
+      <button type="button" class="back-link" data-view="home">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="p.back">Back to Sovereignty Checker</span>
+      </button>
+      <div class="kicker" data-i18n="p.kicker">Legal</div>
+      <h1 class="page-title" data-i18n="p.h1">Privacy Policy</h1>
+      <p class="updated" data-i18n="p.updated">Last updated: January 2026</p>
+      <div class="tldr">
+        <p data-i18n-html="p.tldr"><b>Short version:</b> the extension does not collect, transmit, or sell any data. All analysis happens locally in your browser.</p>
+      </div>
+    </div>
+
+    <article class="wrap">
+      <section>
+        <h2 data-i18n="p.s1.h">What the extension accesses</h2>
+        <p data-i18n="p.s1.p1">To score a page and suggest alternatives, the extension reads, locally and only in your browser:</p>
+        <ul>
+          <li data-i18n="p.s1.li1">the current page's address and the third-party resources it loads (to count trackers and classify infrastructure),</li>
+          <li data-i18n="p.s1.li2">cookies visible to the page (to count them),</li>
+          <li data-i18n="p.s1.li3">links and visible text on the page (to detect a privacy-policy link and GDPR mentions).</li>
+        </ul>
+        <p data-i18n="p.s1.p2">This information is used only to compute the on-screen score and is never sent anywhere. It is held in memory for the active tab and discarded when the tab is closed or reloaded.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s2.h">What is stored</h2>
+        <p data-i18n="p.s2.p1">Your settings and any per-site "don't show" choices are stored with the browser's local extension storage on your device. If you enable auto-updates, a cached copy of the tool database is stored the same way. None of this is transmitted to us or anyone else.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s3.h">Network requests</h2>
+        <p data-i18n="p.s3.p1">The extension makes no network requests by default. If you explicitly enable "Auto-update the tool list" and provide a URL, the extension will fetch that <code>db.json</code> file to refresh its list of tools. That is the only outbound request it can make, and it contains no personal data.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s4.h">No tracking, no ads, no third parties</h2>
+        <p data-i18n="p.s4.p1">The extension contains no analytics, no advertising, and no third-party SDKs. It does not create an account or identify you.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s5.h">Permissions</h2>
+        <div class="table-scroll">
+        <table class="perm-table">
+          <thead><tr><th data-i18n="p.s5.col1">Permission</th><th data-i18n="p.s5.col2">Why it's needed</th></tr></thead>
+          <tbody>
+            <tr><td>storage</td><td data-i18n="p.s5.storage">Save your settings locally.</td></tr>
+            <tr><td>tabs</td><td data-i18n="p.s5.tabs">Know which tab is active to show its score/badge.</td></tr>
+            <tr><td>alarms</td><td data-i18n="p.s5.alarms">Schedule the optional database refresh.</td></tr>
+            <tr><td data-i18n="p.s5.contentLabel">content script</td><td data-i18n="p.s5.content">Read the current page locally to score it.</td></tr>
+            <tr><td>raw.githubusercontent.com</td><td data-i18n="p.s5.host">Only used for the optional database update.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s6.h">Your rights (GDPR)</h2>
+        <p data-i18n="p.s6.p1">Because the extension does not collect or process personal data on any server, there is no personal data of yours for us to access, export, or delete under Articles 15–17 GDPR — none is ever received. Data that stays on your own device is governed by your browser's own storage and sync settings, which you control directly.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s7.h">Changes to this policy</h2>
+        <p data-i18n="p.s7.p1">If this policy changes, the "last updated" date above will change too. Material changes will also be noted in the extension's release notes.</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="p.s8.h">Contact</h2>
+        <p data-i18n-html="p.s8.p1">Questions about this policy or the extension can be sent to: <a href="mailto:info@sovereignty-checker.eu">info@sovereignty-checker.eu</a>.</p>
+      </section>
+    </article>
+  </div>
+  <!-- /view-privacy -->
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="logo" href="#top">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L28 6 V15 C28 23 22 28 16 30 C10 28 4 23 4 15 V6 Z" fill="#1b3a6b"/><path d="M16 11 l1.6 3.3 3.6 .5 -2.6 2.5 .6 3.6 -3.2 -1.7 -3.2 1.7 .6 -3.6 -2.6 -2.5 3.6 -.5 Z" fill="#dbad3a"/></svg>
+        Sovereignty Checker
+      </a>
+      <div class="foot-links">
+        <a href="#how" data-i18n="nav.how">How it works</a>
+        <a href="#alternatives" data-i18n="nav.alternatives">Alternatives</a>
+        <a href="#privacy-policy" class="view-link" data-view="privacy" data-i18n="footer.privacyPolicy">Privacy policy</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="#" data-store-link data-i18n="footer.addToBrowser">Add to browser</a>
+      </div>
+    </div>
+    <div class="foot-made">🇪🇺 <span data-i18n="footer.madeIn">Made in Europe</span> · © <span id="yr"></span> Sovereignty Checker</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---------------------------------------------------------------------
+  // i18n dictionary. Every data-i18n / data-i18n-html target in the HTML
+  // has a matching key here in both languages. Add a language by adding
+  // one more top-level key (e.g. I18N.fr = {...}) and a matching nav button.
+  // ---------------------------------------------------------------------
+  var I18N = {
+    en: {
+      "title-tag": "Sovereignty Checker — a data-ethics grade for every site, and a European alternative",
+      "meta-desc": "A browser extension that scores any website A–F on trackers, cookies and where your data goes — and surfaces GDPR-friendly European alternatives. Runs entirely locally.",
+      "nav.how":"How it works","nav.alternatives":"Alternatives","nav.privacy":"Privacy","nav.faq":"FAQ","nav.cta":"Add to Chrome",
+      "hero.eyebrow":"Chrome · Edge · Brave · free",
+      "hero.title":'Grade the web on data ethics. Then <span class="u">choose Europe</span>.',
+      "hero.sub":"Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a US tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.",
+      "hero.ctaPrimary":"Add to your browser","hero.ctaGhost":"See how scoring works",
+      "hero.note":"No account. No tracking. Nothing leaves your device.",
+      "hero.trustTools":"tools tracked","hero.trustProviders":"European providers","hero.trustGerman":"German providers","hero.trustLocal":"local &amp; private",
+      "hero.demoFoot":"Weights — trackers 30 · data flow 25 · cookies 20 · privacy policy 15 · infrastructure 10",
+      "strip.label":"European providers in the database",
+      "how.kicker":"The score","how.title":"Like Lighthouse, but for data ethics",
+      "how.lead":"Every page is checked against five signals, each weighted. The letter grade lands on your toolbar; the full breakdown is one click away.",
+      "crit.trackers.name":"Trackers","crit.trackers.d":"Third-party trackers and ad-tech loaded on the page.",
+      "crit.dataflow.name":"Data flow","crit.dataflow.d":"How many US-owned destinations receive the data.",
+      "crit.cookies.name":"Cookies","crit.cookies.d":"Cookies set, and whether a consent tool is present.",
+      "crit.policy.name":"Privacy policy","crit.policy.d":"Is there a policy, and does it mention GDPR.",
+      "crit.infra.name":"Infrastructure","crit.infra.d":"Signals of EU versus US hosting behind the site.",
+      "alt.kicker":"The way out","alt.title":"On a US tool? Here's the European one.",
+      "alt.lead":"The moment you open a tracked service, Sovereignty Checker surfaces vetted alternatives — with a strong German and EU focus, open-source options flagged.",
+      "alt.insteadOf":"Instead of",
+      "country.de":"Germany","country.eu":"Europe","country.ee":"Estonia","country.fr":"France","country.gb":"UK",
+      "priv.kicker":"Private by design","priv.title":"The audit stays on your machine",
+      "priv.lead":"A privacy tool that phoned home would be a contradiction. So this one doesn't.",
+      "priv.item1.h":"Everything runs locally","priv.item1.p":"Trackers, cookies and policy checks are computed in your browser from what the page already loads. No page content is ever sent anywhere.",
+      "priv.item2.h":"No accounts, no ads","priv.item2.p":"No sign-up, no analytics, no third-party SDKs, no advertising. It never identifies you and there's nothing to log in to.",
+      "priv.item3.h":"One optional request","priv.item3.p":"The only network call it can make is a tool-list refresh — off by default, to a URL you choose. That's it.",
+      "priv.note":'Why it matters: under the US CLOUD Act, data held by US providers can be compelled regardless of where the servers sit — which is exactly what the <i>Schrems</i> rulings put in question for European data. Sovereignty Checker makes that exposure visible, then points to a European option.',
+      "priv.fullLink":"Read the full privacy policy →",
+      "stats.kicker":"By the numbers","stats.title":"Broad enough to be useful on day one",
+      "stats.tools":"tracked tools","stats.eu":"EU providers","stats.de":"German providers","stats.cat":"categories",
+      "faq.kicker":"Questions","faq.title":"Good to know",
+      "faq.q1":"Is it really free?","faq.a1":"Yes. It's free, independent, and contains no ads or upsells. If you'd like to support it, star the repository or share it with your team.",
+      "faq.q2":"Do you collect any of my data?","faq.a2":'No. The scoring happens entirely in your browser and no browsing data is transmitted. Your settings are stored locally on your device. The only outbound request the extension can make is an optional tool-list update to a URL you set. See the full <a href="#privacy-policy" class="view-link" data-view="privacy">privacy policy</a>.',
+      "faq.q3":"How accurate is the hosting detection?","faq.a3":"Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely US versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.",
+      "faq.q4":"Which browsers are supported?","faq.a4":"Any Chromium browser — Chrome, Edge, Brave, Opera, Arc. A Firefox build is straightforward from the same code; see the project README.",
+      "faq.q5":"Can I add or correct a tool?","faq.a5":"Absolutely. The database is a single file, and the extension can auto-update from a hosted list, so new tools and fixes reach users without a reinstall. Contributions are welcome.",
+      "cta.title":"Put Europe one click away.","cta.sub":"Install Sovereignty Checker and every site gets a grade — and an alternative.","cta.btn":"Add to your browser — free",
+      "footer.privacyPolicy":"Privacy policy","footer.addToBrowser":"Add to browser","footer.madeIn":"Made in Europe",
+      "demo.proton":"0 trackers · EU-hosted · no pre-consent cookies · clear privacy policy",
+      "demo.saas":"6 trackers · US-hosted · 3 cookies before consent · vague policy",
+      "demo.adtech":"22 trackers · data sold to brokers · no consent banner · US CDN",
+      "p.kicker":"Legal","p.h1":"Privacy Policy","p.updated":"Last updated: January 2026",
+      "p.back":"Back to Sovereignty Checker",
+      "p.tldr":"<b>Short version:</b> the extension does not collect, transmit, or sell any data. All analysis happens locally in your browser.",
+      "p.s1.h":"What the extension accesses",
+      "p.s1.p1":"To score a page and suggest alternatives, the extension reads, locally and only in your browser:",
+      "p.s1.li1":"the current page's address and the third-party resources it loads (to count trackers and classify infrastructure),",
+      "p.s1.li2":"cookies visible to the page (to count them),",
+      "p.s1.li3":"links and visible text on the page (to detect a privacy-policy link and GDPR mentions).",
+      "p.s1.p2":"This information is used only to compute the on-screen score and is never sent anywhere. It is held in memory for the active tab and discarded when the tab is closed or reloaded.",
+      "p.s2.h":"What is stored",
+      "p.s2.p1":"Your settings and any per-site \u201cdon\u2019t show\u201d choices are stored with the browser's local extension storage on your device. If you enable auto-updates, a cached copy of the tool database is stored the same way. None of this is transmitted to us or anyone else.",
+      "p.s3.h":"Network requests",
+      "p.s3.p1":'The extension makes no network requests by default. If you explicitly enable "Auto-update the tool list" and provide a URL, the extension will fetch that <code>db.json</code> file to refresh its list of tools. That is the only outbound request it can make, and it contains no personal data.',
+      "p.s4.h":"No tracking, no ads, no third parties",
+      "p.s4.p1":"The extension contains no analytics, no advertising, and no third-party SDKs. It does not create an account or identify you.",
+      "p.s5.h":"Permissions","p.s5.col1":"Permission","p.s5.col2":"Why it's needed",
+      "p.s5.storage":"Save your settings locally.",
+      "p.s5.tabs":"Know which tab is active to show its score/badge.",
+      "p.s5.alarms":"Schedule the optional database refresh.",
+      "p.s5.contentLabel":"content script","p.s5.content":"Read the current page locally to score it.",
+      "p.s5.host":"Only used for the optional database update.",
+      "p.s6.h":"Your rights (GDPR)",
+      "p.s6.p1":"Because the extension does not collect or process personal data on any server, there is no personal data of yours for us to access, export, or delete under Articles 15\u201317 GDPR \u2014 none is ever received. Data that stays on your own device is governed by your browser's own storage and sync settings, which you control directly.",
+      "p.s7.h":"Changes to this policy",
+      "p.s7.p1":"If this policy changes, the \u201clast updated\u201d date above will change too. Material changes will also be noted in the extension's release notes.",
+      "p.s8.h":"Contact",
+      "p.s8.p1":'Questions about this policy or the extension can be sent to: <a href="mailto:info@sovereignty-checker.eu">info@sovereignty-checker.eu</a>.'
+    },
+    de: {
+      "title-tag":"Sovereignty Checker — eine Datenethik-Bewertung für jede Website und eine europäische Alternative",
+      "meta-desc":"Eine Browser-Erweiterung, die jede Website von A–F nach Trackern, Cookies und Datenfluss bewertet — und DSGVO-konforme europäische Alternativen anzeigt. Läuft vollständig lokal.",
+      "nav.how":"So funktioniert's","nav.alternatives":"Alternativen","nav.privacy":"Datenschutz","nav.faq":"FAQ","nav.cta":"Zu Chrome hinzufügen",
+      "hero.eyebrow":"Chrome · Edge · Brave · kostenlos",
+      "hero.title":'Bewerte das Web nach Datenethik. Und <span class="u">wähle Europa</span>.',
+      "hero.sub":"Sovereignty Checker bewertet jede Website von A bis F nach Trackern, Cookies und Datenfluss — und zeigt bei US-Tools DSGVO-konforme europäische Alternativen. Alles läuft lokal in deinem Browser.",
+      "hero.ctaPrimary":"Zum Browser hinzufügen","hero.ctaGhost":"So funktioniert die Bewertung",
+      "hero.note":"Kein Konto. Kein Tracking. Nichts verlässt dein Gerät.",
+      "hero.trustTools":"erfasste Tools","hero.trustProviders":"europäische Anbieter","hero.trustGerman":"deutsche Anbieter","hero.trustLocal":"lokal &amp; privat",
+      "hero.demoFoot":"Gewichtung — Tracker 30 · Datenfluss 25 · Cookies 20 · Datenschutz 15 · Infrastruktur 10",
+      "strip.label":"Europäische Anbieter in der Datenbank",
+      "how.kicker":"Die Bewertung","how.title":"Wie Lighthouse, nur für Datenethik",
+      "how.lead":"Jede Seite wird anhand von fünf gewichteten Signalen geprüft. Die Note landet auf deiner Symbolleiste, die volle Aufschlüsselung ist einen Klick entfernt.",
+      "crit.trackers.name":"Tracker","crit.trackers.d":"Auf der Seite geladene Drittanbieter-Tracker und Ad-Tech.",
+      "crit.dataflow.name":"Datenfluss","crit.dataflow.d":"Wie viele US-Ziele die Daten empfangen.",
+      "crit.cookies.name":"Cookies","crit.cookies.d":"Gesetzte Cookies und ob ein Consent-Tool vorhanden ist.",
+      "crit.policy.name":"Datenschutzerklärung","crit.policy.d":"Gibt es eine Erklärung, und erwähnt sie die DSGVO.",
+      "crit.infra.name":"Infrastruktur","crit.infra.d":"Hinweise auf EU- versus US-Hosting hinter der Seite.",
+      "alt.kicker":"Der Ausweg","alt.title":"Ein US-Tool im Einsatz? Hier ist die europäische Alternative.",
+      "alt.lead":"Sobald du einen erfassten Dienst öffnest, zeigt Sovereignty Checker geprüfte Alternativen — mit starkem Fokus auf Deutschland und die EU, Open-Source-Optionen sind gekennzeichnet.",
+      "alt.insteadOf":"Statt",
+      "country.de":"Deutschland","country.eu":"Europa","country.ee":"Estland","country.fr":"Frankreich","country.gb":"UK",
+      "priv.kicker":"Privat von Grund auf","priv.title":"Die Prüfung bleibt auf deinem Gerät",
+      "priv.lead":"Ein Datenschutz-Tool, das nach Hause telefoniert, wäre ein Widerspruch. Also tut dieses es nicht.",
+      "priv.item1.h":"Alles läuft lokal","priv.item1.p":"Tracker-, Cookie- und Richtlinienprüfungen werden in deinem Browser aus dem berechnet, was die Seite ohnehin lädt. Es werden nie Seiteninhalte irgendwohin gesendet.",
+      "priv.item2.h":"Keine Konten, keine Werbung","priv.item2.p":"Keine Anmeldung, keine Analyse, keine Dritt-SDKs, keine Werbung. Du wirst nie identifiziert, und es gibt nichts, wo man sich einloggen müsste.",
+      "priv.item3.h":"Eine optionale Anfrage","priv.item3.p":"Der einzige Netzwerkaufruf, den es machen kann, ist eine Tool-Listen-Aktualisierung — standardmäßig deaktiviert, an eine URL deiner Wahl. Das war's.",
+      "priv.note":'Warum das wichtig ist: Nach dem US CLOUD Act können Daten bei US-Anbietern unabhängig vom Serverstandort herausverlangt werden — genau das, was die <i>Schrems</i>-Urteile für europäische Daten infrage stellen. Sovereignty Checker macht dieses Risiko sichtbar und zeigt eine europäische Option.',
+      "priv.fullLink":"Vollständige Datenschutzerklärung lesen →",
+      "stats.kicker":"In Zahlen","stats.title":"Groß genug, um vom ersten Tag an nützlich zu sein",
+      "stats.tools":"erfasste Tools","stats.eu":"EU-Anbieter","stats.de":"deutsche Anbieter","stats.cat":"Kategorien",
+      "faq.kicker":"Fragen","faq.title":"Gut zu wissen",
+      "faq.q1":"Ist es wirklich kostenlos?","faq.a1":"Ja. Es ist kostenlos, unabhängig und enthält keine Werbung oder Upsells. Wenn du es unterstützen möchtest, gib dem Repository einen Stern oder teile es mit deinem Team.",
+      "faq.q2":"Sammelt ihr meine Daten?","faq.a2":'Nein. Die Bewertung erfolgt vollständig in deinem Browser, es werden keine Browsing-Daten übertragen. Deine Einstellungen werden lokal auf deinem Gerät gespeichert. Die einzige ausgehende Anfrage der Erweiterung ist ein optionales Tool-Listen-Update an eine von dir festgelegte URL. Siehe die vollständige <a href="#privacy-policy" class="view-link" data-view="privacy">Datenschutzerklärung</a>.',
+      "faq.q3":"Wie genau ist die Hosting-Erkennung?","faq.a3":"Tracker, Cookies und Datenschutzerklärung werden direkt und zuverlässig erkannt. Datenfluss und Infrastruktur sind Heuristiken basierend auf den Domains, die eine Seite lädt — Google, Meta und AWS versus Hetzner, OVH und STACKIT. Sie deuten auf wahrscheinliche US- versus EU-Beteiligung hin, sind aber kein definitiver Hosting-Audit — die Bewertung ist ein schnelles Signal, keine Rechtsberatung.",
+      "faq.q4":"Welche Browser werden unterstützt?","faq.a4":"Jeder Chromium-Browser — Chrome, Edge, Brave, Opera, Arc. Ein Firefox-Build lässt sich aus demselben Code leicht erstellen; siehe die Projekt-README.",
+      "faq.q5":"Kann ich ein Tool hinzufügen oder korrigieren?","faq.a5":"Auf jeden Fall. Die Datenbank ist eine einzelne Datei, und die Erweiterung kann sich automatisch über eine gehostete Liste aktualisieren — neue Tools und Korrekturen erreichen Nutzer ohne Neuinstallation. Beiträge sind willkommen.",
+      "cta.title":"Europa nur einen Klick entfernt.","cta.sub":"Installiere Sovereignty Checker, und jede Website erhält eine Bewertung — und eine Alternative.","cta.btn":"Kostenlos zum Browser hinzufügen",
+      "footer.privacyPolicy":"Datenschutzerklärung","footer.addToBrowser":"Zum Browser hinzufügen","footer.madeIn":"Made in Europe",
+      "demo.proton":"0 Tracker · EU-gehostet · keine Cookies vor Zustimmung · klare Datenschutzerklärung",
+      "demo.saas":"6 Tracker · US-gehostet · 3 Cookies vor Zustimmung · vage Richtlinie",
+      "demo.adtech":"22 Tracker · Daten an Broker verkauft · kein Consent-Banner · US-CDN",
+      "p.kicker":"Rechtliches","p.h1":"Datenschutzerklärung","p.updated":"Zuletzt aktualisiert: Januar 2026",
+      "p.back":"Zurück zu Sovereignty Checker",
+      "p.tldr":"<b>Kurzfassung:</b> Die Erweiterung sammelt, überträgt oder verkauft keine Daten. Alle Analysen erfolgen lokal in deinem Browser.",
+      "p.s1.h":"Worauf die Erweiterung zugreift",
+      "p.s1.p1":"Um eine Seite zu bewerten und Alternativen vorzuschlagen, liest die Erweiterung — lokal und ausschließlich in deinem Browser:",
+      "p.s1.li1":"die Adresse der aktuellen Seite und die von ihr geladenen Drittanbieter-Ressourcen (um Tracker zu zählen und Infrastruktur einzuordnen),",
+      "p.s1.li2":"für die Seite sichtbare Cookies (um sie zu zählen),",
+      "p.s1.li3":"Links und sichtbaren Text auf der Seite (um einen Datenschutzerklärungs-Link und DSGVO-Erwähnungen zu erkennen).",
+      "p.s1.p2":"Diese Informationen werden ausschließlich zur Berechnung der angezeigten Bewertung verwendet und niemals irgendwohin gesendet. Sie werden nur im Arbeitsspeicher des aktiven Tabs gehalten und beim Schließen oder Neuladen des Tabs verworfen.",
+      "p.s2.h":"Was gespeichert wird",
+      "p.s2.p1":"Deine Einstellungen und etwaige „nicht anzeigen“-Entscheidungen pro Website werden im lokalen Erweiterungsspeicher deines Browsers auf deinem Gerät gespeichert. Wenn du automatische Updates aktivierst, wird eine zwischengespeicherte Kopie der Tool-Datenbank auf die gleiche Weise gespeichert. Nichts davon wird an uns oder Dritte übertragen.",
+      "p.s3.h":"Netzwerkanfragen",
+      "p.s3.p1":'Die Erweiterung stellt standardmäßig keine Netzwerkanfragen. Wenn du „Tool-Liste automatisch aktualisieren“ ausdrücklich aktivierst und eine URL angibst, ruft die Erweiterung diese <code>db.json</code>-Datei ab, um ihre Tool-Liste zu aktualisieren. Das ist die einzige ausgehende Anfrage, die sie stellen kann, und sie enthält keine personenbezogenen Daten.',
+      "p.s4.h":"Kein Tracking, keine Werbung, keine Dritten",
+      "p.s4.p1":"Die Erweiterung enthält keine Analysetools, keine Werbung und keine Dritt-SDKs. Sie erstellt kein Konto und identifiziert dich nicht.",
+      "p.s5.h":"Berechtigungen","p.s5.col1":"Berechtigung","p.s5.col2":"Warum sie benötigt wird",
+      "p.s5.storage":"Speichert deine Einstellungen lokal.",
+      "p.s5.tabs":"Erkennt, welcher Tab aktiv ist, um dessen Bewertung/Badge anzuzeigen.",
+      "p.s5.alarms":"Plant die optionale Datenbankaktualisierung.",
+      "p.s5.contentLabel":"Content-Script","p.s5.content":"Liest die aktuelle Seite lokal, um sie zu bewerten.",
+      "p.s5.host":"Wird nur für das optionale Datenbank-Update verwendet.",
+      "p.s6.h":"Deine Rechte (DSGVO)",
+      "p.s6.p1":"Da die Erweiterung keine personenbezogenen Daten auf irgendeinem Server sammelt oder verarbeitet, gibt es keine personenbezogenen Daten von dir, auf die wir gemäß Art. 15–17 DSGVO zugreifen, die wir exportieren oder löschen könnten — es werden schlicht keine empfangen. Daten, die auf deinem eigenen Gerät verbleiben, unterliegen den Speicher- und Synchronisierungseinstellungen deines Browsers, die du selbst kontrollierst.",
+      "p.s7.h":"Änderungen dieser Erklärung",
+      "p.s7.p1":"Wenn sich diese Erklärung ändert, ändert sich auch das oben stehende Datum „zuletzt aktualisiert“. Wesentliche Änderungen werden zusätzlich in den Release Notes der Erweiterung vermerkt.",
+      "p.s8.h":"Kontakt",
+      "p.s8.p1":'Fragen zu dieser Erklärung oder zur Erweiterung kannst du senden an: <a href="mailto:info@sovereignty-checker.eu">info@sovereignty-checker.eu</a>.'
+    }
+  };
+
+  // ---------------------------------------------------------------------
+  // Language engine: apply dictionary, persist choice, default to the
+  // browser's language on first visit.
+  // ---------------------------------------------------------------------
+  var LANG_KEY = "sovc-lang";
+
+  function applyLang(lang){
+    var dict = I18N[lang] || I18N.en;
+    document.documentElement.setAttribute("lang", lang);
+
+    document.title = dict["title-tag"] || document.title;
+    var md = document.getElementById("meta-desc");
+    if(md && dict["meta-desc"]) md.setAttribute("content", dict["meta-desc"]);
+
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if(dict[key] != null) el.textContent = dict[key];
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function(el){
+      var key = el.getAttribute("data-i18n-html");
+      if(dict[key] != null) el.innerHTML = dict[key];
+    });
+
+    document.querySelectorAll(".lang-btn").forEach(function(b){
+      var on = b.getAttribute("data-lang") === lang;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+
+    // Refresh the live demo card's summary text in the new language.
+    if(typeof window.__sovcRefreshDemo === "function") window.__sovcRefreshDemo(dict);
+  }
+
+  function detectDefaultLang(){
+    try {
+      var saved = localStorage.getItem(LANG_KEY);
+      if(saved && I18N[saved]) return saved;
+    } catch(e){}
+    var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+    return nav.indexOf("de") === 0 ? "de" : "en";
+  }
+
+  function setLang(lang){
+    if(!I18N[lang]) lang = "en";
+    try { localStorage.setItem(LANG_KEY, lang); } catch(e){}
+    applyLang(lang);
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(function(b){
+    b.addEventListener("click", function(){ setLang(b.getAttribute("data-lang")); });
+  });
+
+  // ---------------------------------------------------------------------
+  // Mobile menu (hamburger). Only present/interactive under the 860px
+  // breakpoint where .nav-links is hidden by CSS; the panel duplicates
+  // those links plus a direct link into the privacy view.
+  // ---------------------------------------------------------------------
+  var menuBtn = document.getElementById("menu-btn");
+  var mobileMenu = document.getElementById("mobile-menu");
+
+  function closeMenu(){
+    if(!mobileMenu || mobileMenu.hidden) return;
+    mobileMenu.hidden = true;
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+  function toggleMenu(){
+    var open = mobileMenu.hidden;
+    mobileMenu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  if(menuBtn && mobileMenu){
+    menuBtn.addEventListener("click", toggleMenu);
+    mobileMenu.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click", closeMenu);
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") closeMenu();
+    });
+    // Close the panel if the viewport is resized past the breakpoint
+    // (e.g. rotating a tablet to landscape, or a resizable desktop window).
+    window.addEventListener("resize", function(){
+      if(window.innerWidth > 860) closeMenu();
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // In-page view router. Two views live in the DOM at all times (#view-home,
+  // #view-privacy); this just toggles which is visible and keeps the URL
+  // hash in sync so the privacy page is linkable, bookmarkable, and reachable
+  // via browser back/forward, without a real page navigation.
+  // ---------------------------------------------------------------------
+  var VIEWS = { home: document.getElementById("view-home"), privacy: document.getElementById("view-privacy") };
+  var PRIVACY_HASH = "#privacy-policy";
+
+  function showView(name, opts){
+    opts = opts || {};
+    var isPrivacy = name === "privacy";
+    if(VIEWS.home) VIEWS.home.hidden = isPrivacy;
+    if(VIEWS.privacy) VIEWS.privacy.hidden = !isPrivacy;
+
+    if(!opts.skipHash){
+      if(isPrivacy && location.hash !== PRIVACY_HASH){
+        history.pushState({ view:"privacy" }, "", PRIVACY_HASH);
+      } else if(!isPrivacy && location.hash === PRIVACY_HASH){
+        history.pushState({ view:"home" }, "", location.pathname + location.search);
+      }
+    }
+    if(!opts.noScroll) window.scrollTo(0, 0);
+  }
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest && e.target.closest("[data-view]");
+    if(!el) return;
+    e.preventDefault();
+    closeMenu();
+    showView(el.getAttribute("data-view"));
+  });
+
+  window.addEventListener("popstate", function(){
+    showView(location.hash === PRIVACY_HASH ? "privacy" : "home", { skipHash: true });
+  });
+
+  // Deep link support: opening the page directly on #privacy-policy lands
+  // on the privacy view immediately, no flash of the home page first.
+  showView(location.hash === PRIVACY_HASH ? "privacy" : "home", { skipHash: true, noScroll: true });
+
+  // ---------------------------------------------------------------------
+  // Score demo (unchanged mechanics, now language-aware summaries)
+  // ---------------------------------------------------------------------
+  var PRESETS = {
+    proton: { host:"proton.me", score:92, grade:"A", color:"#1a8f5c", summaryKey:"demo.proton",
+      bars:{Trackers:100,"Data flow":100,Cookies:95,"Privacy policy":100,Infrastructure:100} },
+    saas: { host:"example-saas.com", score:48, grade:"C", color:"#c98a1a", summaryKey:"demo.saas",
+      bars:{Trackers:28,"Data flow":44,Cookies:60,"Privacy policy":70,Infrastructure:40} },
+    adtech: { host:"adtech-tracker.io", score:18, grade:"F", color:"#c0392b", summaryKey:"demo.adtech",
+      bars:{Trackers:0,"Data flow":10,Cookies:15,"Privacy policy":20,Infrastructure:40} }
+  };
+  var WEIGHTS = {Trackers:"30%","Data flow":"25%",Cookies:"20%","Privacy policy":"15%",Infrastructure:"10%"};
+  var C = 289.0;
+  var reduce = (typeof window.matchMedia === "function") && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var currentKey = "proton";
+
+  var ring=document.getElementById("ring"), scoreEl=document.getElementById("score"),
+      gradeEl=document.getElementById("grade"), hostEl=document.getElementById("host"),
+      sumEl=document.getElementById("summary"), brkEl=document.getElementById("brk");
+
+  function barColor(v){ return v>=70?"#4a9d3f":v>=45?"#c98a1a":"#c0392b"; }
+
+  function buildBars(){
+    brkEl.innerHTML="";
+    Object.keys(WEIGHTS).forEach(function(k){
+      var row=document.createElement("div"); row.className="brk-row";
+      row.innerHTML='<div class="brk-k">'+k+'<span>'+WEIGHTS[k]+'</span></div>'+
+        '<div class="brk-track"><div class="brk-fill" data-k="'+k+'"></div></div>';
+      brkEl.appendChild(row);
+    });
+  }
+
+  var animId=0;
+  function countTo(target,color){
+    cancelAnimationFrame(animId);
+    if(reduce){ scoreEl.textContent=target; scoreEl.style.color=color; return; }
+    var start=parseInt(scoreEl.textContent,10)||0, t0=null, dur=650;
+    function step(t){ if(!t0)t0=t; var p=Math.min(1,(t-t0)/dur);
+      var e=1-Math.pow(1-p,3);
+      scoreEl.textContent=Math.round(start+(target-start)*e); scoreEl.style.color=color;
+      if(p<1) animId=requestAnimationFrame(step);
+    }
+    animId=requestAnimationFrame(step);
+  }
+
+  function apply(key){
+    currentKey = key;
+    var d=PRESETS[key];
+    var dict = I18N[document.documentElement.getAttribute("lang")] || I18N.en;
+    ring.style.stroke=d.color;
+    ring.style.strokeDashoffset=(C*(1-d.score/100)).toFixed(1);
+    gradeEl.textContent="Grade "+d.grade; gradeEl.style.color=d.color;
+    hostEl.textContent=d.host; sumEl.textContent=dict[d.summaryKey] || "";
+    countTo(d.score,d.color);
+    Object.keys(d.bars).forEach(function(k){
+      var el=brkEl.querySelector('[data-k="'+k+'"]'); if(!el)return;
+      var v=d.bars[k];
+      requestAnimationFrame(function(){ el.style.width=v+"%"; el.style.background=barColor(v); });
+    });
+    document.querySelectorAll(".pick").forEach(function(b){
+      var on=b.getAttribute("data-key")===key;
+      b.setAttribute("aria-selected",on?"true":"false");
+      b.style.background=on?d.color:""; b.style.color=on?"#fff":"";
+    });
+  }
+
+  // Called by applyLang() so switching language updates the summary text
+  // of whichever preset is currently selected, without restarting the ring.
+  window.__sovcRefreshDemo = function(dict){
+    var d = PRESETS[currentKey];
+    if(d) sumEl.textContent = dict[d.summaryKey] || "";
+  };
+
+  document.querySelectorAll(".pick").forEach(function(b){
+    b.addEventListener("click",function(){ apply(b.getAttribute("data-key")); });
+  });
+
+  buildBars();
+  apply("proton");
+
+  // provider marquee
+  var providers=["Nextcloud","Proton","Hetzner","OVHcloud","Mistral","DeepL","Personio","DATEV","sevdesk","Shopware","Matomo","Plausible","Tuta","STACKIT","Aleph Alpha","Qwant","Ecosia","Mollie","Nuclino","Element","Wire","Penpot","Codeberg","Scaleway","IONOS","Bunny.net","Brevo","Usercentrics"];
+  var mq=document.getElementById("marquee");
+  var html=providers.map(function(p){return '<span class="chip">'+p+'</span>';}).join("");
+  mq.innerHTML=html+html;
+
+  document.getElementById("yr").textContent=new Date().getFullYear();
+
+  // Chrome Web Store listing for this extension. Every [data-store-link]
+  // element (nav CTA, hero CTA, closing CTA, footer link) points here.
+  var STORE_URL="https://chromewebstore.google.com/detail/software-sovereignty-chec/fgfhpgaimidmpieeohmmfphokjgmobgd?hl=en-US&utm_source=ext_sidebar";
+  if(STORE_URL){ document.querySelectorAll("[data-store-link]").forEach(function(a){ a.setAttribute("href",STORE_URL); a.setAttribute("target","_blank"); a.setAttribute("rel","noopener"); }); }
+
+  // Apply the detected/saved language last, once everything above exists.
+  applyLang(detectDefaultLang());
+})();
+</script>
+</body>
+</html>
