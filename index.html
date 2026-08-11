@@ -344,7 +344,7 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       <div>
         <span class="eyebrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke="currentColor" stroke-width="2"/></svg> <span data-i18n="hero.eyebrow">Chrome · Edge · Brave · free</span></span>
         <h1 data-i18n-html="hero.title">Grade the web on data ethics. Then <span class="u">choose Europe</span>.</h1>
-        <p class="hero-sub" data-i18n="hero.sub">Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a US tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.</p>
+        <p class="hero-sub" data-i18n="hero.sub">Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a non-European tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" href="#install" data-store-link data-i18n="hero.ctaPrimary">Add to your browser</a>
           <a class="btn btn-ghost btn-lg" href="#how" data-i18n="hero.ctaGhost">See how scoring works</a>
@@ -401,17 +401,17 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
     </div>
     <div class="crit">
       <div class="crit-card"><div class="crit-w" style="color:var(--gF)">30</div><div class="crit-name" data-i18n="crit.trackers.name">Trackers</div><div class="crit-d" data-i18n="crit.trackers.d">Third-party trackers and ad-tech loaded on the page.</div><div class="crit-bar"><i style="width:100%;background:var(--gF)"></i></div></div>
-      <div class="crit-card"><div class="crit-w" style="color:var(--gD)">25</div><div class="crit-name" data-i18n="crit.dataflow.name">Data flow</div><div class="crit-d" data-i18n="crit.dataflow.d">How many US-owned destinations receive the data.</div><div class="crit-bar"><i style="width:83%;background:var(--gD)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gD)">25</div><div class="crit-name" data-i18n="crit.dataflow.name">Data flow</div><div class="crit-d" data-i18n="crit.dataflow.d">How many non-European destinations receive the data.</div><div class="crit-bar"><i style="width:83%;background:var(--gD)"></i></div></div>
       <div class="crit-card"><div class="crit-w" style="color:var(--gC)">20</div><div class="crit-name" data-i18n="crit.cookies.name">Cookies</div><div class="crit-d" data-i18n="crit.cookies.d">Cookies set, and whether a consent tool is present.</div><div class="crit-bar"><i style="width:66%;background:var(--gC)"></i></div></div>
       <div class="crit-card"><div class="crit-w" style="color:var(--gB)">15</div><div class="crit-name" data-i18n="crit.policy.name">Privacy policy</div><div class="crit-d" data-i18n="crit.policy.d">Is there a policy, and does it mention GDPR.</div><div class="crit-bar"><i style="width:50%;background:var(--gB)"></i></div></div>
-      <div class="crit-card"><div class="crit-w" style="color:var(--gA)">10</div><div class="crit-name" data-i18n="crit.infra.name">Infrastructure</div><div class="crit-d" data-i18n="crit.infra.d">Signals of EU versus US hosting behind the site.</div><div class="crit-bar"><i style="width:33%;background:var(--gA)"></i></div></div>
+      <div class="crit-card"><div class="crit-w" style="color:var(--gA)">10</div><div class="crit-name" data-i18n="crit.infra.name">Infrastructure</div><div class="crit-d" data-i18n="crit.infra.d">Signals of EU versus non-EU hosting behind the site.</div><div class="crit-bar"><i style="width:33%;background:var(--gA)"></i></div></div>
     </div>
   </section>
 
   <section class="sec wrap" id="alternatives" style="padding-top:0">
     <div class="sec-head">
       <div class="kicker" data-i18n="alt.kicker">The way out</div>
-      <h2 data-i18n="alt.title">On a US tool? Here's the European one.</h2>
+      <h2 data-i18n="alt.title">On a non-European tool? Here's the European one.</h2>
       <p class="sec-lead" data-i18n="alt.lead">The moment you open a tracked service, Sovereignty Checker surfaces vetted alternatives — with a strong German and EU focus, open-source options flagged.</p>
     </div>
     <div class="alts">
@@ -513,7 +513,7 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
     <div class="faq">
       <details open><summary data-i18n="faq.q1">Is it really free?</summary><p data-i18n="faq.a1">Yes. It's free, independent, and contains no ads or upsells. If you'd like to support it, star the repository or share it with your team.</p></details>
       <details><summary data-i18n="faq.q2">Do you collect any of my data?</summary><p data-i18n-html="faq.a2">No. The scoring happens entirely in your browser and no browsing data is transmitted. Your settings are stored locally on your device. The only outbound request the extension can make is an optional tool-list update to a URL you set. See the full <a href="#privacy-policy" class="view-link" data-view="privacy">privacy policy</a>.</p></details>
-      <details><summary data-i18n="faq.q3">How accurate is the hosting detection?</summary><p data-i18n="faq.a3">Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely US versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.</p></details>
+      <details><summary data-i18n="faq.q3">How accurate is the hosting detection?</summary><p data-i18n="faq.a3">Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely non-EU versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.</p></details>
       <details><summary data-i18n="faq.q4">Which browsers are supported?</summary><p data-i18n="faq.a4">Any Chromium browser — Chrome, Edge, Brave, Opera, Arc. A Firefox build is straightforward from the same code; see the project README.</p></details>
       <details><summary data-i18n="faq.q5">Can I add or correct a tool?</summary><p data-i18n="faq.a5">Absolutely. The database is a single file, and the extension can auto-update from a hosted list, so new tools and fixes reach users without a reinstall. Contributions are welcome.</p></details>
     </div>
@@ -637,7 +637,7 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "nav.how":"How it works","nav.alternatives":"Alternatives","nav.privacy":"Privacy","nav.faq":"FAQ","nav.cta":"Add to Chrome",
       "hero.eyebrow":"Chrome · Edge · Brave · free",
       "hero.title":'Grade the web on data ethics. Then <span class="u">choose Europe</span>.',
-      "hero.sub":"Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a US tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.",
+      "hero.sub":"Sovereignty Checker scores every site from A to F on trackers, cookies and where your data flows — and when you land on a non-European tool, it shows GDPR-friendly European alternatives. All of it runs locally in your browser.",
       "hero.ctaPrimary":"Add to your browser","hero.ctaGhost":"See how scoring works",
       "hero.note":"No account. No tracking. Nothing leaves your device.",
       "hero.trustTools":"tools tracked","hero.trustProviders":"European providers","hero.trustGerman":"German providers","hero.trustLocal":"local &amp; private",
@@ -646,11 +646,11 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "how.kicker":"The score","how.title":"Like Lighthouse, but for data ethics",
       "how.lead":"Every page is checked against five signals, each weighted. The letter grade lands on your toolbar; the full breakdown is one click away.",
       "crit.trackers.name":"Trackers","crit.trackers.d":"Third-party trackers and ad-tech loaded on the page.",
-      "crit.dataflow.name":"Data flow","crit.dataflow.d":"How many US-owned destinations receive the data.",
+      "crit.dataflow.name":"Data flow","crit.dataflow.d":"How many non-European destinations receive the data.",
       "crit.cookies.name":"Cookies","crit.cookies.d":"Cookies set, and whether a consent tool is present.",
       "crit.policy.name":"Privacy policy","crit.policy.d":"Is there a policy, and does it mention GDPR.",
-      "crit.infra.name":"Infrastructure","crit.infra.d":"Signals of EU versus US hosting behind the site.",
-      "alt.kicker":"The way out","alt.title":"On a US tool? Here's the European one.",
+      "crit.infra.name":"Infrastructure","crit.infra.d":"Signals of EU versus non-EU hosting behind the site.",
+      "alt.kicker":"The way out","alt.title":"On a non-European tool? Here's the European one.",
       "alt.lead":"The moment you open a tracked service, Sovereignty Checker surfaces vetted alternatives — with a strong German and EU focus, open-source options flagged.",
       "alt.insteadOf":"Instead of",
       "country.de":"Germany","country.eu":"Europe","country.ee":"Estonia","country.fr":"France","country.gb":"UK",
@@ -666,14 +666,14 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "faq.kicker":"Questions","faq.title":"Good to know",
       "faq.q1":"Is it really free?","faq.a1":"Yes. It's free, independent, and contains no ads or upsells. If you'd like to support it, star the repository or share it with your team.",
       "faq.q2":"Do you collect any of my data?","faq.a2":'No. The scoring happens entirely in your browser and no browsing data is transmitted. Your settings are stored locally on your device. The only outbound request the extension can make is an optional tool-list update to a URL you set. See the full <a href="#privacy-policy" class="view-link" data-view="privacy">privacy policy</a>.',
-      "faq.q3":"How accurate is the hosting detection?","faq.a3":"Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely US versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.",
+      "faq.q3":"How accurate is the hosting detection?","faq.a3":"Trackers, cookies and privacy-policy detection are read directly and reliably. Data flow and infrastructure are heuristics based on the domains a page loads — Google, Meta and AWS versus Hetzner, OVH and STACKIT. They indicate likely non-EU versus EU involvement, not a definitive hosting audit, and the score is a fast signal rather than legal advice.",
       "faq.q4":"Which browsers are supported?","faq.a4":"Any Chromium browser — Chrome, Edge, Brave, Opera, Arc. A Firefox build is straightforward from the same code; see the project README.",
       "faq.q5":"Can I add or correct a tool?","faq.a5":"Absolutely. The database is a single file, and the extension can auto-update from a hosted list, so new tools and fixes reach users without a reinstall. Contributions are welcome.",
       "cta.title":"Put Europe one click away.","cta.sub":"Install Sovereignty Checker and every site gets a grade — and an alternative.","cta.btn":"Add to your browser — free",
       "footer.privacyPolicy":"Privacy policy","footer.addToBrowser":"Add to browser","footer.madeIn":"Made in Europe",
       "demo.proton":"0 trackers · EU-hosted · no pre-consent cookies · clear privacy policy",
-      "demo.saas":"6 trackers · US-hosted · 3 cookies before consent · vague policy",
-      "demo.adtech":"22 trackers · data sold to brokers · no consent banner · US CDN",
+      "demo.saas":"6 trackers · non-EU hosted · 3 cookies before consent · vague policy",
+      "demo.adtech":"22 trackers · data sold to brokers · no consent banner · non-EU CDN",
       "p.kicker":"Legal","p.h1":"Privacy Policy","p.updated":"Last updated: January 2026",
       "p.back":"Back to Sovereignty Checker",
       "p.tldr":"<b>Short version:</b> the extension does not collect, transmit, or sell any data. All analysis happens locally in your browser.",
@@ -708,7 +708,7 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "nav.how":"So funktioniert's","nav.alternatives":"Alternativen","nav.privacy":"Datenschutz","nav.faq":"FAQ","nav.cta":"Zu Chrome hinzufügen",
       "hero.eyebrow":"Chrome · Edge · Brave · kostenlos",
       "hero.title":'Bewerte das Web nach Datenethik. Und <span class="u">wähle Europa</span>.',
-      "hero.sub":"Sovereignty Checker bewertet jede Website von A bis F nach Trackern, Cookies und Datenfluss — und zeigt bei US-Tools DSGVO-konforme europäische Alternativen. Alles läuft lokal in deinem Browser.",
+      "hero.sub":"Sovereignty Checker bewertet jede Website von A bis F nach Trackern, Cookies und Datenfluss — und zeigt bei nicht-europäischen Tools DSGVO-konforme europäische Alternativen. Alles läuft lokal in deinem Browser.",
       "hero.ctaPrimary":"Zum Browser hinzufügen","hero.ctaGhost":"So funktioniert die Bewertung",
       "hero.note":"Kein Konto. Kein Tracking. Nichts verlässt dein Gerät.",
       "hero.trustTools":"erfasste Tools","hero.trustProviders":"europäische Anbieter","hero.trustGerman":"deutsche Anbieter","hero.trustLocal":"lokal &amp; privat",
@@ -717,11 +717,11 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "how.kicker":"Die Bewertung","how.title":"Wie Lighthouse, nur für Datenethik",
       "how.lead":"Jede Seite wird anhand von fünf gewichteten Signalen geprüft. Die Note landet auf deiner Symbolleiste, die volle Aufschlüsselung ist einen Klick entfernt.",
       "crit.trackers.name":"Tracker","crit.trackers.d":"Auf der Seite geladene Drittanbieter-Tracker und Ad-Tech.",
-      "crit.dataflow.name":"Datenfluss","crit.dataflow.d":"Wie viele US-Ziele die Daten empfangen.",
+      "crit.dataflow.name":"Datenfluss","crit.dataflow.d":"Wie viele nicht-europäische Ziele die Daten empfangen.",
       "crit.cookies.name":"Cookies","crit.cookies.d":"Gesetzte Cookies und ob ein Consent-Tool vorhanden ist.",
       "crit.policy.name":"Datenschutzerklärung","crit.policy.d":"Gibt es eine Erklärung, und erwähnt sie die DSGVO.",
-      "crit.infra.name":"Infrastruktur","crit.infra.d":"Hinweise auf EU- versus US-Hosting hinter der Seite.",
-      "alt.kicker":"Der Ausweg","alt.title":"Ein US-Tool im Einsatz? Hier ist die europäische Alternative.",
+      "crit.infra.name":"Infrastruktur","crit.infra.d":"Hinweise auf EU- versus Nicht-EU-Hosting hinter der Seite.",
+      "alt.kicker":"Der Ausweg","alt.title":"Ein nicht-europäisches Tool im Einsatz? Hier ist die europäische Alternative.",
       "alt.lead":"Sobald du einen erfassten Dienst öffnest, zeigt Sovereignty Checker geprüfte Alternativen — mit starkem Fokus auf Deutschland und die EU, Open-Source-Optionen sind gekennzeichnet.",
       "alt.insteadOf":"Statt",
       "country.de":"Deutschland","country.eu":"Europa","country.ee":"Estland","country.fr":"Frankreich","country.gb":"UK",
@@ -737,14 +737,14 @@ article code{background:var(--card);border:1px solid var(--line);border-radius:4
       "faq.kicker":"Fragen","faq.title":"Gut zu wissen",
       "faq.q1":"Ist es wirklich kostenlos?","faq.a1":"Ja. Es ist kostenlos, unabhängig und enthält keine Werbung oder Upsells. Wenn du es unterstützen möchtest, gib dem Repository einen Stern oder teile es mit deinem Team.",
       "faq.q2":"Sammelt ihr meine Daten?","faq.a2":'Nein. Die Bewertung erfolgt vollständig in deinem Browser, es werden keine Browsing-Daten übertragen. Deine Einstellungen werden lokal auf deinem Gerät gespeichert. Die einzige ausgehende Anfrage der Erweiterung ist ein optionales Tool-Listen-Update an eine von dir festgelegte URL. Siehe die vollständige <a href="#privacy-policy" class="view-link" data-view="privacy">Datenschutzerklärung</a>.',
-      "faq.q3":"Wie genau ist die Hosting-Erkennung?","faq.a3":"Tracker, Cookies und Datenschutzerklärung werden direkt und zuverlässig erkannt. Datenfluss und Infrastruktur sind Heuristiken basierend auf den Domains, die eine Seite lädt — Google, Meta und AWS versus Hetzner, OVH und STACKIT. Sie deuten auf wahrscheinliche US- versus EU-Beteiligung hin, sind aber kein definitiver Hosting-Audit — die Bewertung ist ein schnelles Signal, keine Rechtsberatung.",
+      "faq.q3":"Wie genau ist die Hosting-Erkennung?","faq.a3":"Tracker, Cookies und Datenschutzerklärung werden direkt und zuverlässig erkannt. Datenfluss und Infrastruktur sind Heuristiken basierend auf den Domains, die eine Seite lädt — Google, Meta und AWS versus Hetzner, OVH und STACKIT. Sie deuten auf wahrscheinliche Nicht-EU- versus EU-Beteiligung hin, sind aber kein definitiver Hosting-Audit — die Bewertung ist ein schnelles Signal, keine Rechtsberatung.",
       "faq.q4":"Welche Browser werden unterstützt?","faq.a4":"Jeder Chromium-Browser — Chrome, Edge, Brave, Opera, Arc. Ein Firefox-Build lässt sich aus demselben Code leicht erstellen; siehe die Projekt-README.",
       "faq.q5":"Kann ich ein Tool hinzufügen oder korrigieren?","faq.a5":"Auf jeden Fall. Die Datenbank ist eine einzelne Datei, und die Erweiterung kann sich automatisch über eine gehostete Liste aktualisieren — neue Tools und Korrekturen erreichen Nutzer ohne Neuinstallation. Beiträge sind willkommen.",
       "cta.title":"Europa nur einen Klick entfernt.","cta.sub":"Installiere Sovereignty Checker, und jede Website erhält eine Bewertung — und eine Alternative.","cta.btn":"Kostenlos zum Browser hinzufügen",
       "footer.privacyPolicy":"Datenschutzerklärung","footer.addToBrowser":"Zum Browser hinzufügen","footer.madeIn":"Made in Europe",
       "demo.proton":"0 Tracker · EU-gehostet · keine Cookies vor Zustimmung · klare Datenschutzerklärung",
-      "demo.saas":"6 Tracker · US-gehostet · 3 Cookies vor Zustimmung · vage Richtlinie",
-      "demo.adtech":"22 Tracker · Daten an Broker verkauft · kein Consent-Banner · US-CDN",
+      "demo.saas":"6 Tracker · außerhalb der EU gehostet · 3 Cookies vor Zustimmung · vage Richtlinie",
+      "demo.adtech":"22 Tracker · Daten an Broker verkauft · kein Consent-Banner · Nicht-EU-CDN",
       "p.kicker":"Rechtliches","p.h1":"Datenschutzerklärung","p.updated":"Zuletzt aktualisiert: Januar 2026",
       "p.back":"Zurück zu Sovereignty Checker",
       "p.tldr":"<b>Kurzfassung:</b> Die Erweiterung sammelt, überträgt oder verkauft keine Daten. Alle Analysen erfolgen lokal in deinem Browser.",
